@@ -1,17 +1,16 @@
 <div>
 	<form>
 		<div>
-			<label for="sex">Sex: </label>
-			<select class="form-control" [(ngModel)]="body.sex" name="sex" id="sex">
-				<option value="m">Male</option>
-				<option value="F">Female</option>
+			<label for="gender">Gender: </label>
+			<select class="form-control" name="gender" id="gender">
+				<option *ngFor="let b = bodyChoices" [value]="b.choices">{{b.displayName}}</option>
 			</select>
 		</div>
 
 		<div class="form-group">
 			<label for="fur-pattern">Fur Pattern: </label>
 			<select class="form-control" id="fur-pattern" >
-				<option *ngFor="let o of"
+				<option *ngFor="let o of options.coat" [value]="o.fn">{{o.dn}}</option>
 			</select>
 		</div>
 	</form>

@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { NgModel } from "@angular/forms";
 
 @Component({
 	selector: 'app-body-form',
@@ -6,6 +7,8 @@ import { Component, Input } from '@angular/core';
 	styleUrls: ['./body-form.component.css']
 })
 export class BodyFormComponent {
+
+	options = {};
 
     maleChoices = {
         base: [{dn: "Default (male)", fn: "male.png"}], 
@@ -22,6 +25,17 @@ export class BodyFormComponent {
         rightEar: [{dn: "Rounded", fn: "rounded.png"}, {dn: "Pointed", fn: "pointed.png"}, {dn: "Damaged", fn: "damaged.png"}], 
         hair: [{dn: "Spiked", fn: "spiked.png"}, {dn: "Flowing", fn: "flowing.png"}]
 	};
+
+	bodyChoices = [
+		{
+			displayName: "Male", 
+			choices: this.maleChoices
+		}, 
+		{
+			displayName: "Female", 
+			choices: this.femaleChoices
+		}
+	]
 	
 	bodyMap;
 

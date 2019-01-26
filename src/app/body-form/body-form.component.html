@@ -1,17 +1,11 @@
 <div>
-	<form>
-		<div>
-			<label for="gender">Gender: </label>
-			<select class="form-control" name="gender" id="gender">
-				<option *ngFor="let b = bodyChoices" [value]="b.choices">{{b.displayName}}</option>
-			</select>
-		</div>
-
+	<form name="body-form">
 		<div class="form-group">
-			<label for="fur-pattern">Fur Pattern: </label>
-			<select class="form-control" id="fur-pattern" >
-				<option *ngFor="let o of options.coat" [value]="o.fn">{{o.dn}}</option>
+			<label for="gender">Gender: </label>
+			<select class="form-control" name="gender" id="gender" [(ngModel)]="options">
+				<option *ngFor="let t of bodyChoices" [ngValue]="t.choices">{{t.displayName}}</option>
 			</select>
+			<p>Value: {{JSON.stringify(options)}}</p>
 		</div>
 	</form>
 </div>

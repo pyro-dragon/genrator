@@ -4,11 +4,13 @@ import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 import { BodyFormComponent } from './body-form/body-form.component';
+import { CharacterDisplayComponent } from './character-display/character-display.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    BodyFormComponent
+    BodyFormComponent,
+    CharacterDisplayComponent
   ],
   imports: [
     BrowserModule,

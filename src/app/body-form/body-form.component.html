@@ -1,11 +1,55 @@
-<div>
-	<form name="body-form">
-		<div class="form-group">
-			<label for="gender">Gender: </label>
-			<select class="form-control" name="gender" id="gender" [(ngModel)]="options">
-				<option *ngFor="let t of bodyChoices" [ngValue]="t.choices">{{t.displayName}}</option>
-			</select>
-			<p>Value: {{JSON.stringify(options)}}</p>
+<div class="container">
+	<form name="gender-form">
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label" for="gender">Gender: </label>
+			<div class="col-10-md">
+				<select class="form-control" name="gender" id="gender" [(ngModel)]="options">
+					<option *ngFor="let b of bodyChoices" [ngValue]="b.choices">{{b.displayName}}</option>
+				</select>
+			</div>
+		</div>
+	</form>
+
+	<form *ngIf="options" name="body-form">
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label" for="species">Species: </label>
+			<div class="col-10-md">
+				<select class="form-control" name="species" id="species" [(ngModel)]="body.base">
+					<option *ngFor="let p of options.coat" [ngValue]="p.fn">{{p.dn}}</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label" for="left-ear">Left Ear: </label>
+			<div class="col-10-md">
+				<select class="form-control" name="left-ear" id="left-ear" [(ngModel)]="body.leftEar">
+					<option *ngFor="let le of options.leftEar" [ngValue]="le.fn">{{le.dn}}</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label" for="right-ear">Right Ear: </label>
+			<div class="col-10-md">
+				<select class="form-control" name="right-ear" id="right-ear" [(ngModel)]="body.rightEar">
+					<option *ngFor="let re of options.rightEar" [ngValue]="re.fn">{{re.dn}}</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label" for="hair">Hair: </label>
+			<div class="col-10-md">
+				<select class="form-control" name="hair" id="hair" [(ngModel)]="body.hair">
+					<option *ngFor="let h of options.hair" [ngValue]="h.fn">{{h.dn}}</option>
+				</select>
+			</div>
+		</div>
+		<div class="form-group row">
+			<label class="col-sm-2 col-form-label" for="tail">Tail: </label>
+			<div class="col-10-md">
+				<select class="form-control" name="tail" id="tail" [(ngModel)]="body.tail">
+					<option *ngFor="let t of options.tail" [ngValue]="t.fn">{{t.dn}}</option>
+				</select>
+			</div>
 		</div>
 	</form>
 </div>

@@ -6,5 +6,7 @@
 }
 
 canvas {
-	background-color: transparent;
+    background-color: transparent;
+    width: 410px;
+    height: 898px;
 }

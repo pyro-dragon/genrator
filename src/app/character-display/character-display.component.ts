@@ -1,15 +1,13 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input } from "@angular/core";
 
 @Component({
-  selector: 'app-character-display',
-  templateUrl: './character-display.component.html',
-  styleUrls: ['./character-display.component.css']
+	selector: "app-character-display",
+	templateUrl: "./character-display.component.html",
+	styleUrls: ["./character-display.component.css"]
 })
-export class CharacterDisplayComponent implements OnInit {
+export class CharacterDisplayComponent {
 
-  constructor() { }
+	@Input() body: {};
 
-  ngOnInit() {
-  }
-
+	constructor() { }
 }

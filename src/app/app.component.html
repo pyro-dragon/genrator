@@ -3,6 +3,14 @@
 
 </div>
 <div class="options-form">
-    <app-body-form [body]="body"></app-body-form>
-    <p>{{JSON.stringify(body)}}</p>
+	<div class="container">
+		<div class="row">
+			<div class="col-6-md">
+				<app-body-form [body]="body"></app-body-form>
+			</div>
+			<div class="col-6-md">
+				<app-character-display [body]="body"></app-character-display>
+			</div>
+		</div>
+	</div>
 </div>

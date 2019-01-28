@@ -1,4 +1,5 @@
 import { Component, Input, ViewChild, ElementRef, AfterViewInit } from "@angular/core";
+import layout from "../../assets/layout.json";
 
 @Component({
 	selector: "app-character-display",
@@ -11,7 +12,9 @@ export class CharacterDisplayComponent implements AfterViewInit {
 	@ViewChild("canvas1") canvas1: ElementRef;
 	@ViewChild("canvas2") canvas2: ElementRef;
 
-	constructor() {}
+	constructor() {
+		console.log(layout);
+	}
 
 	ngAfterViewInit() {
 		if (this.canvas1.nativeElement.getContext) {

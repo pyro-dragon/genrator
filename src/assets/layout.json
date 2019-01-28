@@ -1,0 +1,56 @@
+{
+	"canvas-size": {
+		"width": 1641,
+		"height": 3594
+	},
+	"colour-pallet": ["fur", "markings", "hair"], 
+	"layers": [
+		{
+			"name": "body",
+			"colour": "fur"
+		}, 
+		{
+			"name": "body-markings",
+			"colour": "markings"
+		}, 
+		{
+			"name": "body-lines"
+		}, 
+		{
+			"name": "nose",
+			"colour": "markings"
+		}, 
+		{
+			"name": "hair",
+			"colour": "hair"
+		}, 
+		{
+			"name": "hair-lines"
+		}, 
+		{
+			"name": "left-ear",
+			"colour": "fur"
+		}, 
+		{
+			"name": "left-ear-lines"
+		}, 
+		{
+			"name": "right-ear",
+			"colour": "fur"
+		}, 
+		{
+			"name": "right-ear-lines"
+		}, 
+		{
+			"name": "tail",
+			"colour": "fur"
+		}, 
+		{
+			"name": "tail-markings",
+			"colour": "markings"
+		}, 
+		{
+			"name": "tail-lines"
+		}
+	]
+}

@@ -1,5 +1,6 @@
 import { Component, Input, ViewChild, ElementRef, AfterViewInit } from "@angular/core";
 import layout from "../../assets/layout.json";
+declare var Caman: any;
 
 @Component({
 	selector: "app-character-display",
@@ -9,61 +10,123 @@ import layout from "../../assets/layout.json";
 export class CharacterDisplayComponent implements AfterViewInit {
 
 	@Input() body: {};
-	@ViewChild("canvas1") canvas1: ElementRef;
-	@ViewChild("canvas2") canvas2: ElementRef;
+	@ViewChild("bodyColour") bodyColour: ElementRef;
+	@ViewChild("bodyLines") bodyLines: ElementRef;
+	@ViewChild("hairColour") hairColour: ElementRef;
+	@ViewChild("hairLines") hairLines: ElementRef;
+	@ViewChild("leftEarColour") leftEarColour: ElementRef;
+	@ViewChild("leftEarLines") leftEarLines: ElementRef;
+	@ViewChild("rightEarColor") rightEarColor: ElementRef;
+	@ViewChild("rightEarLines") rightEarLines: ElementRef;
+	@ViewChild("tailColour") tailColour: ElementRef;
+	@ViewChild("tailLines") tailLines: ElementRef;
+
+	baseColour = "#d1c19e";
+	markingsColour = "#2b1e04";
+	maneColour = "#ec8f23";
+	lineColour = "#000000";
 
 	constructor() {
 		console.log(layout);
 	}
 
 	ngAfterViewInit() {
-		if (this.canvas1.nativeElement.getContext) {
+		
+		Caman(this.bodyColour.nativeElement, "/assets/Bodies/Female/Body/Base.png", function () {
+			this.newLayer(function(){
+				this.fillColor("#d1c19e");
+				this.newLayer(function(){
+					this.overlayImage("/assets/Bodies/Female/Body/Spotted Markings.png");
+					this.newLayer(function(){
+						this.fillColor("#2b1e04");
+					});
+				});
+				this.newLayer(function(){
+					this.overlayImage("/assets/Bodies/Female/Body/Nose.png");
+					this.newLayer(function(){
+						this.fillColor("#0e0901");
+					});
+				});
+			});
+			this.render();
+		  });
 
-			let context = this.canvas1.nativeElement.getContext("2d");
-			let layer1 = new Image();
-			let layer2 = new Image();
-			layer1.src = "/assets/Bodies/Female/Body/Base.png";
-			layer1.onload = function() {
+		Caman(this.bodyLines.nativeElement, "/assets/Bodies/Female/Body/Lines.png", function () {
+			this.newLayer(function(){
+				this.setBlendingMode("normal");
+				this.fillColor("#000000");
+			});
+			this.render();
+		});
 
-				layer2.src = "/assets/Bodies/Female/Body/Lines.png";
-				layer2.onload = function() {
+		Caman(this.hairColour.nativeElement, "/assets/Bodies/Female/Hair/Ironed Base.png", function () {
+			this.newLayer(function(){
+				this.setBlendingMode("normal");
+				this.fillColor("#ec8f23");
+			});
+			this.render();
+		});
 
-					context.drawImage(layer1, 0, 0);
-					context.globalCompositeOperation = "source-in";
-					context.fillStyle = "#eedef7";
-					context.fillRect(0, 0 , layer1.width, layer1.height);
-					context.globalCompositeOperation = "source-over";
-					context.drawImage(layer2, 0, 0);
-				};
-			};
-		}
-		else {
-			return;
-		}
+		Caman(this.hairLines.nativeElement, "/assets/Bodies/Female/Hair/Ironed Lines.png", function () {
+			this.newLayer(function(){
+				this.setBlendingMode("normal");
+				this.fillColor("#000000");
+			});
+			this.render();
+		});
 
-		if (this.canvas2.nativeElement.getContext) {
+		Caman(this.leftEarColour.nativeElement, "/assets/Bodies/Female/Left Ear/Rounded Base.png", function () {
+			this.newLayer(function(){
+				this.setBlendingMode("normal");
+				this.fillColor("#d1c19e");
+			});
+			this.render();
+		});
 
-			let context = this.canvas2.nativeElement.getContext("2d");
-			let layer3 = new Image();
-			let layer4 = new Image();
-			layer3.src = "/assets/Bodies/Female/Hair/Ironed Base.png";
-			layer3.onload = function() {
+		Caman(this.leftEarLines.nativeElement, "/assets/Bodies/Female/Left Ear/Rounded Lines.png", function () {
+			this.newLayer(function(){
+				this.setBlendingMode("normal");
+				this.fillColor("#000000");
+			});
+			this.render();
+		});
 
-				layer4.src = "/assets/Bodies/Female/Hair/Ironed Lines.png";
-				layer4.onload = function() {
+		Caman(this.rightEarColor.nativeElement, "/assets/Bodies/Female/Right Ear/Rounded Base.png", function () {
+			this.newLayer(function(){
+				this.setBlendingMode("normal");
+				this.fillColor("#d1c19e");
+			});
+			this.render();
+		});
 
-					context.drawImage(layer3, 0, 0);
-					context.globalCompositeOperation = "source-in";
-					context.fillStyle = "#ffdeee";
-					context.fillRect(0, 0 , layer3.width, layer3.height);
-					context.globalCompositeOperation = "source-over";
-					context.drawImage(layer4, 0, 0);
-				};
-				
-			};
-		}
-		else {
-			return;
-		}
+		Caman(this.rightEarLines.nativeElement, "/assets/Bodies/Female/Right Ear/Rounded Lines.png", function () {
+			this.newLayer(function(){
+				this.setBlendingMode("normal");
+				this.fillColor("#000000");
+			});
+			this.render();
+		});
+
+		Caman(this.tailColour.nativeElement, "/assets/Bodies/Female/Tail/Spotted Base.png", function () {
+			this.newLayer(function(){
+				this.setBlendingMode("normal");
+				this.fillColor("#d1c19e");
+				this.newLayer(function(){
+					this.overlayImage("/assets/Bodies/Female/Tail/Spotted Markings.png");
+					this.newLayer(function(){
+						this.fillColor("#2b1e04");
+					});
+				});
+			});
+			this.render();
+		});
+
+		Caman(this.tailLines.nativeElement, "/assets/Bodies/Female/Tail/Spotted Lines.png", function () {
+			this.newLayer(function(){
+				this.setBlendingMode("normal");
+				this.fillColor("#000000");
+			});
+			this.render();
+		});
 	}
 }

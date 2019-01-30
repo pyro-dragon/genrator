@@ -25,7 +25,9 @@
             "styles": [
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [
+				"node_modules/caman/dist/caman.full.js"
+			]
           },
           "configurations": {
             "production": {

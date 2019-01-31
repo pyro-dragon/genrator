@@ -26,8 +26,10 @@ export class CharacterDisplayComponent implements AfterViewInit {
 	maneColour = "#ec8f23";
 	lineColour = "#000000";
 
+	JSON;
+
 	constructor() {
-		console.log(layout);
+		this.JSON = JSON;
 	}
 
 	ngAfterViewInit() {

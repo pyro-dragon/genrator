@@ -1,12 +1,9 @@
 <header><h1>Character designer</h1></header>
-<div id="display-zone">
-
-</div>
-<div class="options-form">
-	<div class="container">
-		<div class="row">
-			<app-character-display class="col-6-md" [body]="body"></app-character-display>
-			<app-body-form class="col-6-md" [body]="body"></app-body-form>
+<div>
+	<div class="container-fluid">
+		<div class="row align-items-start">
+			<app-character-display class="col" [body]="body"></app-character-display>
+			<app-body-form class="col" [body]="body"></app-body-form>
 		</div>
 	</div>
 </div>

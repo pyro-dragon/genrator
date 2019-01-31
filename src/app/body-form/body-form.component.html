@@ -1,10 +1,10 @@
-<div class="container">
+<div>
 	<form name="gender-form">
 		<div class="form-group row">
 			<label class="col-sm-2 col-form-label" for="gender">Gender: </label>
 			<div class="col-10-md">
-				<select class="form-control" name="gender" id="gender" [(ngModel)]="options">
-					<option *ngFor="let b of bodyChoices" [ngValue]="b.choices">{{b.displayName}}</option>
+				<select class="form-control" name="gender" id="gender" [(ngModel)]="options" (change)="updateBody()">
+					<option *ngFor="let b of bodyOptions" [ngValue]="b.options">{{b.displayName}}</option>
 				</select>
 			</div>
 		</div>
@@ -14,40 +14,40 @@
 		<div class="form-group row">
 			<label class="col-sm-2 col-form-label" for="species">Species: </label>
 			<div class="col-10-md">
-				<select class="form-control" name="species" id="species" [(ngModel)]="body.base">
-					<option *ngFor="let p of options.coat" [ngValue]="p.fn">{{p.dn}}</option>
+				<select class="form-control" name="species" id="species" [(ngModel)]="bodyIndex.coat" (change)="updateBody()">
+					<option *ngFor="let p of options.coat; let i = index" [ngValue]="i">{{p.dn}}</option>
 				</select>
 			</div>
 		</div>
 		<div class="form-group row">
 			<label class="col-sm-2 col-form-label" for="left-ear">Left Ear: </label>
 			<div class="col-10-md">
-				<select class="form-control" name="left-ear" id="left-ear" [(ngModel)]="body.leftEar">
-					<option *ngFor="let le of options.leftEar" [ngValue]="le.fn">{{le.dn}}</option>
+				<select class="form-control" name="left-ear" id="left-ear" [(ngModel)]="bodyIndex.leftEar" (change)="updateBody()">
+					<option *ngFor="let le of options.leftEar; let i = index" [ngValue]="i">{{le.dn}}</option>
 				</select>
 			</div>
 		</div>
 		<div class="form-group row">
 			<label class="col-sm-2 col-form-label" for="right-ear">Right Ear: </label>
 			<div class="col-10-md">
-				<select class="form-control" name="right-ear" id="right-ear" [(ngModel)]="body.rightEar">
-					<option *ngFor="let re of options.rightEar" [ngValue]="re.fn">{{re.dn}}</option>
+				<select class="form-control" name="right-ear" id="right-ear" [(ngModel)]="bodyIndex.rightEar" (change)="updateBody()">
+					<option *ngFor="let re of options.rightEar; let i = index" [ngValue]="i">{{re.dn}}</option>
 				</select>
 			</div>
 		</div>
 		<div class="form-group row">
 			<label class="col-sm-2 col-form-label" for="hair">Hair: </label>
 			<div class="col-10-md">
-				<select class="form-control" name="hair" id="hair" [(ngModel)]="body.hair">
-					<option *ngFor="let h of options.hair" [ngValue]="h.fn">{{h.dn}}</option>
+				<select class="form-control" name="hair" id="hair" [(ngModel)]="bodyIndex.hair" (change)="updateBody()">
+					<option *ngFor="let h of options.hair; let i = index" [ngValue]="i">{{h.dn}}</option>
 				</select>
 			</div>
 		</div>
 		<div class="form-group row">
 			<label class="col-sm-2 col-form-label" for="tail">Tail: </label>
 			<div class="col-10-md">
-				<select class="form-control" name="tail" id="tail" [(ngModel)]="body.tail">
-					<option *ngFor="let t of options.tail" [ngValue]="t.fn">{{t.dn}}</option>
+				<select class="form-control" name="tail" id="tail" [(ngModel)]="bodyIndex.tail" (change)="updateBody()">
+					<option *ngFor="let t of options.tail; let i = index" [ngValue]="i">{{t.dn}}</option>
 				</select>
 			</div>
 		</div>

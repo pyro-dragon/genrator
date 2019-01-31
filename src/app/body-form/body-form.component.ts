@@ -7,41 +7,68 @@ import { Component, Input } from "@angular/core";
 })
 export class BodyFormComponent {
 
-	maleChoices = {
-		base: [{dn: "Default (male)", fn: "male.png"}], 
-		coat: [{dn: "Spotted", fn: "spotted.png"}, {dn: "Striped", fn: "striped.png"}], 
-		leftEar: [{dn: "Rounded", fn: "rounded.png"}, {dn: "Pointed", fn: "pointed.png"}, {dn: "Damaged", fn: "damaged.png"}], 
-		rightEar: [{dn: "Rounded", fn: "rounded.png"}, {dn: "Pointed", fn: "pointed.png"}, {dn: "Damaged", fn: "damaged.png"}], 
-		hair: [{dn: "Spiked", fn: "spiked.png"}, {dn: "Buzz Cut", fn: "buzzed.png"}],
-		tail: [{dn: "Paintbrush", fn: "paintbrush.png"}, {dn: "Bushy", fn: "bushy.png"}]
+	bodyIndex = {
+		base: 0, 
+		coat: 0, 
+		leftEar: 0, 
+		rightEar: 0, 
+		hair: 0,
+		tail: 0
 	};
 
-	femaleChoices = {
-		base: [{dn: "Default (female)", fn: "female.png"}], 
-		coat: [{dn: "Spotted", fn: "spotted.png"}, {dn: "Striped", fn: "striped.png"}], 
-		leftEar: [{dn: "Rounded", fn: "rounded.png"}, {dn: "Pointed", fn: "pointed.png"}, {dn: "Damaged", fn: "damaged.png"}], 
-		rightEar: [{dn: "Rounded", fn: "rounded.png"}, {dn: "Pointed", fn: "pointed.png"}, {dn: "Damaged", fn: "damaged.png"}], 
-		hair: [{dn: "Spiked", fn: "spiked.png"}, {dn: "Flowing", fn: "flowing.png"}],
-		tail: [{dn: "Paintbrush", fn: "paintbrush.png"}, {dn: "Bushy", fn: "bushy.png"}]
+	maleOptions = {
+		base: [{dn: "Default (male)", fn: "male"}], 
+		coat: [{dn: "Spotted", fn: "spotted"}, {dn: "Striped", fn: "striped"}], 
+		leftEar: [{dn: "Rounded", fn: "rounded"}, {dn: "Pointed", fn: "pointed"}, {dn: "Damaged", fn: "damaged"}], 
+		rightEar: [{dn: "Rounded", fn: "rounded"}, {dn: "Pointed", fn: "pointed"}, {dn: "Damaged", fn: "damaged"}], 
+		hair: [{dn: "Spiked", fn: "spiked"}, {dn: "Buzz Cut", fn: "buzzed"}],
+		tail: [{dn: "Paintbrush", fn: "paintbrush"}, {dn: "Bushy", fn: "bushy"}]
 	};
 
-	bodyChoices = [
+	femaleOptions = {
+		base: [{dn: "Default (female)", fn: "female"}], 
+		coat: [{dn: "Spotted", fn: "spotted"}, {dn: "Striped", fn: "striped"}], 
+		leftEar: [{dn: "Rounded", fn: "rounded"}, {dn: "Pointed", fn: "pointed"}, {dn: "Damaged", fn: "damaged"}], 
+		rightEar: [{dn: "Rounded", fn: "rounded"}, {dn: "Pointed", fn: "pointed"}, {dn: "Damaged", fn: "damaged"}], 
+		hair: [{dn: "Spiked", fn: "spiked"}, {dn: "Flowing", fn: "flowing"}],
+		tail: [{dn: "Paintbrush", fn: "paintbrush"}, {dn: "Bushy", fn: "bushy"}]
+	};
+
+	bodyOptions = [
 		{
 			displayName: "Male", 
-			choices: this.maleChoices
+			options: this.maleOptions
 		}, 
 		{
 			displayName: "Female", 
-			choices: this.femaleChoices
+			options: this.femaleOptions
 		}
 	];
 
-	options = this.maleChoices;
+	options = this.maleOptions;
 	JSON;
 
 	@Input() body: {};
 	
 	constructor() {
 		this.JSON = JSON;
+		this.body = {
+			base: this.options.base[this.bodyIndex.base].fn, 
+			coat: this.options.coat[this.bodyIndex.coat].fn, 
+			leftEar: this.options.leftEar[this.bodyIndex.leftEar].fn, 
+			rightEar: this.options.rightEar[this.bodyIndex.rightEar].fn, 
+			hair: this.options.hair[this.bodyIndex.hair].fn,
+			tail: this.options.tail[this.bodyIndex.tail].fn
+		}
+	}
+
+	updateBody() {
+
+		this.body.base = this.options.base[this.bodyIndex.base].fn;
+		this.body.coat = this.options.coat[this.bodyIndex.coat].fn;
+		this.body.leftEar = this.options.leftEar[this.bodyIndex.leftEar].fn;
+		this.body.rightEar = this.options.rightEar[this.bodyIndex.rightEar].fn;
+		this.body.hair = this.options.hair[this.bodyIndex.hair].fn;
+		this.body.tail = this.options.tail[this.bodyIndex.tail].fn;
 	}
 }

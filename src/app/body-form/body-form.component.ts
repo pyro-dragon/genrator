@@ -1,11 +1,12 @@
-import { Component, Input } from "@angular/core";
+import { Component, Input, AfterContentInit } from "@angular/core";
+import { Body } from "../Body";
 
 @Component({
 	selector: "app-body-form",
 	templateUrl: "./body-form.component.html",
 	styleUrls: ["./body-form.component.css"]
 })
-export class BodyFormComponent {
+export class BodyFormComponent implements AfterContentInit {
 
 	bodyIndex = {
 		base: 0, 
@@ -48,18 +49,14 @@ export class BodyFormComponent {
 	options = this.maleOptions;
 	JSON;
 
-	@Input() body: {};
+	@Input() body: Body;
 	
 	constructor() {
 		this.JSON = JSON;
-		this.body = {
-			base: this.options.base[this.bodyIndex.base].fn, 
-			coat: this.options.coat[this.bodyIndex.coat].fn, 
-			leftEar: this.options.leftEar[this.bodyIndex.leftEar].fn, 
-			rightEar: this.options.rightEar[this.bodyIndex.rightEar].fn, 
-			hair: this.options.hair[this.bodyIndex.hair].fn,
-			tail: this.options.tail[this.bodyIndex.tail].fn
-		}
+	}
+
+	ngAfterContentInit() {
+		this.updateBody();
 	}
 
 	updateBody() {

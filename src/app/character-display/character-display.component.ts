@@ -114,29 +114,26 @@ export class CharacterDisplayComponent implements DoCheck {
 		const changes = this.differ.diff(this.body); // check for changes
 		if (changes) {
 			// do something if changes were found
-			this.render();
 			changes.forEachChangedItem((change) => {
-				console.log(change);
+				switch (change.key) {
+					case "base" : this.renderAll(); break;
+					case "coat" : this.renderCoat(); break;
+					case "leftEar" : this.renderLeftEar(); break;
+					case "rightEar" : this.renderRightEar(); break;
+					case "hair" : this.renderHair(); break;
+					case "tail" : this.renderTail(); break;
+					default : this.renderAll();
+				}
 			});
 		}
 	}
 
-	render() {
-
+	renderCoat() {
 		const prefabRoot = this.imageMap.root + this.imageMap.base[this.body.base];
 		const coatBase = prefabRoot + this.imageMap.coat.colourBase;
 		const markingsBase = prefabRoot + this.imageMap.coat.markingsBase[this.body.coat];
 		const nose = prefabRoot + this.imageMap.coat.nose;
 		const baseLines = prefabRoot + this.imageMap.coat.lines;
-		const hairBase = this.body.hair ? prefabRoot + this.imageMap.hair[this.body.hair].colourBase : "";
-		const hairLines = this.body.hair ? prefabRoot + this.imageMap.hair[this.body.hair].lines : "";
-		const leftEarBase = this.body.leftEar ? prefabRoot + this.imageMap.leftEar[this.body.leftEar].colourBase : "";
-		const leftEarLines = this.body.leftEar ? prefabRoot + this.imageMap.leftEar[this.body.leftEar].lines : "";
-		const rightEarBase = this.body.rightEar ? prefabRoot + this.imageMap.rightEar[this.body.rightEar].colourBase : "";
-		const rightEarLines = this.body.rightEar ?  prefabRoot + this.imageMap.rightEar[this.body.rightEar].lines : "";
-		const tailBase = this.body.tail ? prefabRoot + this.imageMap.tail[this.body.tail].colourBase : "";
-		const tailMarkings = this.body.tail ? prefabRoot + this.imageMap.tail[this.body.tail].markingsBase : "";
-		const tailLines = this.body.tail ? prefabRoot + this.imageMap.tail[this.body.tail].lines : "";
 
 		this.bodyColour.nativeElement.removeAttribute("data-caman-id");
 		Caman(this.bodyColour.nativeElement, coatBase, function () {
@@ -169,46 +166,13 @@ export class CharacterDisplayComponent implements DoCheck {
 
 			this.render();
 		});
+	}
 
-		this.hairColour.nativeElement.removeAttribute("data-caman-id");
-		Caman(this.hairColour.nativeElement, hairBase, function () {
-			this.newLayer(function() {
-				this.setBlendingMode("normal");
-				this.fillColor("#ec8f23");
-			});
+	renderLeftEar() {
 
-			this.render();
-		});
-
-		this.hairLines.nativeElement.removeAttribute("data-caman-id");
-		Caman(this.hairLines.nativeElement, hairLines, function () {
-			this.newLayer(function() {
-				this.setBlendingMode("normal");
-				this.fillColor("#000000");
-			});
-
-			this.render();
-		});
-
-		this.rightEarColor.nativeElement.removeAttribute("data-caman-id");
-		Caman(this.rightEarColor.nativeElement, rightEarBase, function () {
-			this.newLayer(function() {
-				this.setBlendingMode("normal");
-				this.fillColor("#d1c19e");
-			});
-
-			this.render();
-		});
-
-		this.rightEarLines.nativeElement.removeAttribute("data-caman-id");
-		Caman(this.rightEarLines.nativeElement, rightEarLines, function () {
-			this.newLayer(function() {
-				this.setBlendingMode("normal");
-				this.fillColor("#000000");
-			});
-
-			this.render();
-		});
+		const prefabRoot = this.imageMap.root + this.imageMap.base[this.body.base];
+		const leftEarBase = this.body.leftEar ? prefabRoot + this.imageMap.leftEar[this.body.leftEar].colourBase : "";
+		const leftEarLines = this.body.leftEar ? prefabRoot + this.imageMap.leftEar[this.body.leftEar].lines : "";
 
 		this.leftEarColour.nativeElement.removeAttribute("data-caman-id");
 		Caman(this.leftEarColour.nativeElement, leftEarBase, function () {
@@ -229,6 +193,68 @@ export class CharacterDisplayComponent implements DoCheck {
 
 			this.render();
 		});
+	}
+
+	renderRightEar() {
+
+		const prefabRoot = this.imageMap.root + this.imageMap.base[this.body.base];
+		const rightEarBase = this.body.rightEar ? prefabRoot + this.imageMap.rightEar[this.body.rightEar].colourBase : "";
+		const rightEarLines = this.body.rightEar ?  prefabRoot + this.imageMap.rightEar[this.body.rightEar].lines : "";
+
+		this.rightEarColor.nativeElement.removeAttribute("data-caman-id");
+		Caman(this.rightEarColor.nativeElement, rightEarBase, function () {
+			this.newLayer(function() {
+				this.setBlendingMode("normal");
+				this.fillColor("#d1c19e");
+			});
+
+			this.render();
+		});
+
+		this.rightEarLines.nativeElement.removeAttribute("data-caman-id");
+		Caman(this.rightEarLines.nativeElement, rightEarLines, function () {
+			this.newLayer(function() {
+				this.setBlendingMode("normal");
+				this.fillColor("#000000");
+			});
+
+			this.render();
+		});
+	}
+
+	renderHair() {
+
+		const prefabRoot = this.imageMap.root + this.imageMap.base[this.body.base];
+		const hairBase = this.body.hair ? prefabRoot + this.imageMap.hair[this.body.hair].colourBase : "";
+		const hairLines = this.body.hair ? prefabRoot + this.imageMap.hair[this.body.hair].lines : "";
+
+		this.hairColour.nativeElement.removeAttribute("data-caman-id");
+		Caman(this.hairColour.nativeElement, hairBase, function () {
+			this.newLayer(function() {
+				this.setBlendingMode("normal");
+				this.fillColor("#ec8f23");
+			});
+
+			this.render();
+		});
+
+		this.hairLines.nativeElement.removeAttribute("data-caman-id");
+		Caman(this.hairLines.nativeElement, hairLines, function () {
+			this.newLayer(function() {
+				this.setBlendingMode("normal");
+				this.fillColor("#000000");
+			});
+
+			this.render();
+		});
+	}
+
+	renderTail() {
+
+		const prefabRoot = this.imageMap.root + this.imageMap.base[this.body.base];
+		const tailBase = this.body.tail ? prefabRoot + this.imageMap.tail[this.body.tail].colourBase : "";
+		const tailMarkings = this.body.tail ? prefabRoot + this.imageMap.tail[this.body.tail].markingsBase : "";
+		const tailLines = this.body.tail ? prefabRoot + this.imageMap.tail[this.body.tail].lines : "";
 
 		this.tailColour.nativeElement.removeAttribute("data-caman-id");
 		Caman(this.tailColour.nativeElement, tailBase, function () {
@@ -255,5 +281,13 @@ export class CharacterDisplayComponent implements DoCheck {
 
 			this.render();
 		});
+	}
+
+	renderAll() {
+		this.renderCoat();
+		this.renderLeftEar();
+		this.renderRightEar();
+		this.renderHair();
+		this.renderTail();
 	}
 }

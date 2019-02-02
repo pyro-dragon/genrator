@@ -22,8 +22,8 @@ export class BodyFormComponent implements AfterContentInit {
 		coat: [{dn: "Spotted", fn: "spotted"}, {dn: "Striped", fn: "striped"}], 
 		leftEar: [{dn: "Rounded", fn: "rounded"}, {dn: "Pointed", fn: "pointed"}, {dn: "Damaged", fn: "damaged"}], 
 		rightEar: [{dn: "Rounded", fn: "rounded"}, {dn: "Pointed", fn: "pointed"}, {dn: "Damaged", fn: "damaged"}], 
-		hair: [{dn: "Spiked", fn: "spiked"}, {dn: "Buzz Cut", fn: "buzzed"}],
-		tail: [{dn: "Paintbrush", fn: "paintbrush"}, {dn: "Bushy", fn: "bushy"}]
+		hair: [{dn: "Mohawk", fn: "mohawk"}, {dn: "Buzz Cut", fn: "buzzed"}],
+		tail: [{dn: "Paintbrush", fn: "spotted"}, {dn: "Bushy", fn: "striped"}]
 	};
 
 	femaleOptions = {
@@ -31,8 +31,8 @@ export class BodyFormComponent implements AfterContentInit {
 		coat: [{dn: "Spotted", fn: "spotted"}, {dn: "Striped", fn: "striped"}], 
 		leftEar: [{dn: "Rounded", fn: "rounded"}, {dn: "Pointed", fn: "pointed"}, {dn: "Damaged", fn: "damaged"}], 
 		rightEar: [{dn: "Rounded", fn: "rounded"}, {dn: "Pointed", fn: "pointed"}, {dn: "Damaged", fn: "damaged"}], 
-		hair: [{dn: "Spiked", fn: "spiked"}, {dn: "Flowing", fn: "flowing"}],
-		tail: [{dn: "Paintbrush", fn: "paintbrush"}, {dn: "Bushy", fn: "bushy"}]
+		hair: [{dn: "Ironed", fn: "ironed"}, {dn: "Plaits", fn: "plaits"}],
+		tail: [{dn: "Paintbrush", fn: "spotted"}, {dn: "Bushy", fn: "striped"}]
 	};
 
 	bodyOptions = [

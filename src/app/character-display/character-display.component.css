@@ -1,5 +1,6 @@
 .viewport {
 	position: relative;
+	height: 800px;
 }
 .viewport canvas {
 	position: absolute;
@@ -7,6 +8,6 @@
 
 canvas {
     background-color: transparent;
-    width: 410px;
-    height: 898px;
+    width: 365px;
+    height: 800px;
 }

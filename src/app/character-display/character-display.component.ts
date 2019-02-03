@@ -22,11 +22,6 @@ export class CharacterDisplayComponent implements DoCheck {
 	@ViewChild("tailColour") tailColour: ElementRef;
 	@ViewChild("tailLines") tailLines: ElementRef;
 
-	baseColour = "#d1c19e";
-	markingsColour = "#2b1e04";
-	maneColour = "#ec8f23";
-	lineColour = "#000000";
-
 	imageMap = {
 		root: "/assets/Bodies/",
 		base: {
@@ -104,10 +99,12 @@ export class CharacterDisplayComponent implements DoCheck {
 
 	JSON;
 	differ;
+	colourDiffer;
 
 	constructor(differs: KeyValueDiffers) {
 		this.JSON = JSON;
 		this.differ = differs.find({}).create();
+		this.colourDiffer = differs.find({}).create();
 	}
 
 	ngDoCheck() {
@@ -126,6 +123,20 @@ export class CharacterDisplayComponent implements DoCheck {
 				}
 			});
 		}
+
+		const colourChanges = this.colourDiffer.diff(this.body.colour); // check for changes
+		if (colourChanges) {
+			// do something if changes were found
+			colourChanges.forEachChangedItem((change) => {
+				switch (change.key) {
+					case "body" : this.renderAll(); break;
+					case "markings" : this.renderCoat(); this.renderTail(); break;
+					case "nose" : this.renderCoat(); break;
+					case "hair" : this.renderHair(); break;
+					//default : this.renderAll();
+				}
+			});
+		}
 	}
 
 	renderCoat() {
@@ -134,22 +145,23 @@ export class CharacterDisplayComponent implements DoCheck {
 		const markingsBase = prefabRoot + this.imageMap.coat.markingsBase[this.body.coat];
 		const nose = prefabRoot + this.imageMap.coat.nose;
 		const baseLines = prefabRoot + this.imageMap.coat.lines;
+		const colours = this.body.colour;
 
 		this.bodyColour.nativeElement.removeAttribute("data-caman-id");
 		Caman(this.bodyColour.nativeElement, coatBase, function () {
 			this.newLayer(function() {
-				this.fillColor("#d1c19e");
+				this.fillColor(colours.body);
 				this.newLayer(function() {
 					this.overlayImage(markingsBase);
 					this.newLayer(function() {
-						this.fillColor("#2b1e04");
+						this.fillColor(colours.markings);
 					});
 				});
 
 				this.newLayer(function() {
 					this.overlayImage(nose);
 					this.newLayer(function() {
-						this.fillColor("#0e0901");
+						this.fillColor(colours.nose);
 					});
 				});
 			});
@@ -173,12 +185,13 @@ export class CharacterDisplayComponent implements DoCheck {
 		const prefabRoot = this.imageMap.root + this.imageMap.base[this.body.base];
 		const leftEarBase = this.body.leftEar ? prefabRoot + this.imageMap.leftEar[this.body.leftEar].colourBase : "";
 		const leftEarLines = this.body.leftEar ? prefabRoot + this.imageMap.leftEar[this.body.leftEar].lines : "";
+		const colours = this.body.colour;
 
 		this.leftEarColour.nativeElement.removeAttribute("data-caman-id");
 		Caman(this.leftEarColour.nativeElement, leftEarBase, function () {
 			this.newLayer(function() {
 				this.setBlendingMode("normal");
-				this.fillColor("#d1c19e");
+				this.fillColor(colours.body);
 			});
 
 			this.render();
@@ -200,12 +213,13 @@ export class CharacterDisplayComponent implements DoCheck {
 		const prefabRoot = this.imageMap.root + this.imageMap.base[this.body.base];
 		const rightEarBase = this.body.rightEar ? prefabRoot + this.imageMap.rightEar[this.body.rightEar].colourBase : "";
 		const rightEarLines = this.body.rightEar ?  prefabRoot + this.imageMap.rightEar[this.body.rightEar].lines : "";
+		const colours = this.body.colour;
 
 		this.rightEarColor.nativeElement.removeAttribute("data-caman-id");
 		Caman(this.rightEarColor.nativeElement, rightEarBase, function () {
 			this.newLayer(function() {
 				this.setBlendingMode("normal");
-				this.fillColor("#d1c19e");
+				this.fillColor(colours.body);
 			});
 
 			this.render();
@@ -227,12 +241,13 @@ export class CharacterDisplayComponent implements DoCheck {
 		const prefabRoot = this.imageMap.root + this.imageMap.base[this.body.base];
 		const hairBase = this.body.hair ? prefabRoot + this.imageMap.hair[this.body.hair].colourBase : "";
 		const hairLines = this.body.hair ? prefabRoot + this.imageMap.hair[this.body.hair].lines : "";
+		const colours = this.body.colour;
 
 		this.hairColour.nativeElement.removeAttribute("data-caman-id");
 		Caman(this.hairColour.nativeElement, hairBase, function () {
 			this.newLayer(function() {
 				this.setBlendingMode("normal");
-				this.fillColor("#ec8f23");
+				this.fillColor(colours.hair);
 			});
 
 			this.render();
@@ -255,16 +270,17 @@ export class CharacterDisplayComponent implements DoCheck {
 		const tailBase = this.body.tail ? prefabRoot + this.imageMap.tail[this.body.tail].colourBase : "";
 		const tailMarkings = this.body.tail ? prefabRoot + this.imageMap.tail[this.body.tail].markingsBase : "";
 		const tailLines = this.body.tail ? prefabRoot + this.imageMap.tail[this.body.tail].lines : "";
+		const colours = this.body.colour;
 
 		this.tailColour.nativeElement.removeAttribute("data-caman-id");
 		Caman(this.tailColour.nativeElement, tailBase, function () {
 			this.newLayer(function() {
 				this.setBlendingMode("normal");
-				this.fillColor("#d1c19e");
+				this.fillColor(colours.body);
 				this.newLayer(function() {
 					this.overlayImage(tailMarkings);
 					this.newLayer(function() {
-						this.fillColor("#2b1e04");
+						this.fillColor(colours.markings);
 					});
 				});
 			});

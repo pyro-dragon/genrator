@@ -57,6 +57,12 @@ export class BodyFormComponent implements AfterContentInit {
 
 	ngAfterContentInit() {
 		this.updateBody();
+
+		// Some sensible defaults
+		this.body.colour.body = "#d1c19e";
+		this.body.colour.markings = "#2b1e04";
+		this.body.colour.nose = "#0e0901";
+		this.body.colour.hair = "#ec8f23";
 	}
 
 	updateBody() {

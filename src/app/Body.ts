@@ -5,4 +5,11 @@ export class Body {
 	rightEar = "";
 	hair = "";
 	tail = "";
+	colour = {
+		body: "", 
+		markings: "", 
+		hair: "", 
+		nose: "", 
+		eyes: ""
+	}
 }

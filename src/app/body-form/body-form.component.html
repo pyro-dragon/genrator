@@ -1,55 +1,88 @@
-<div>
-	<form name="gender-form">
-		<div class="form-group row">
-			<label class="col-sm-2 col-form-label" for="gender">Gender: </label>
-			<div class="col-10-md">
-				<select class="form-control" name="gender" id="gender" [(ngModel)]="options" (change)="updateBody()">
-					<option *ngFor="let b of bodyOptions" [ngValue]="b.options">{{b.displayName}}</option>
-				</select>
-			</div>
+<div class="container-fluid">
+	<div class="row align-items-start">
+		<div class="col-sm-5">
+			<form name="gender-form">
+				<div class="form-group row">
+					<label class="col-sm-2 col-form-label" for="gender">Gender: </label>
+					<div class="col-sm-10">
+						<select class="form-control" name="gender" id="gender" [(ngModel)]="options" (change)="updateBody()">
+							<option *ngFor="let b of bodyOptions" [ngValue]="b.options">{{b.displayName}}</option>
+						</select>
+					</div>
+				</div>
+			</form>
+		
+			<form *ngIf="options" name="body-form">
+				<div class="form-group row">
+					<label class="col-sm-2 col-form-label" for="species">Species: </label>
+					<div class="col-sm-10">
+						<select class="form-control" name="species" id="species" [(ngModel)]="bodyIndex.coat" (change)="updateBody()">
+							<option *ngFor="let p of options.coat; let i = index" [ngValue]="i">{{p.dn}}</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-2 col-form-label" for="left-ear">Left Ear: </label>
+					<div class="col-sm-10">
+						<select class="form-control" name="left-ear" id="left-ear" [(ngModel)]="bodyIndex.leftEar" (change)="updateBody()">
+							<option *ngFor="let le of options.leftEar; let i = index" [ngValue]="i">{{le.dn}}</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-2 col-form-label" for="right-ear">Right Ear: </label>
+					<div class="col-sm-10">
+						<select class="form-control" name="right-ear" id="right-ear" [(ngModel)]="bodyIndex.rightEar" (change)="updateBody()">
+							<option *ngFor="let re of options.rightEar; let i = index" [ngValue]="i">{{re.dn}}</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-2 col-form-label" for="hair">Hair: </label>
+					<div class="col-sm-10">
+						<select class="form-control" name="hair" id="hair" [(ngModel)]="bodyIndex.hair" (change)="updateBody()">
+							<option *ngFor="let h of options.hair; let i = index" [ngValue]="i">{{h.dn}}</option>
+						</select>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-2 col-form-label" for="tail">Tail: </label>
+					<div class="col-sm-10">
+						<select class="form-control" name="tail" id="tail" [(ngModel)]="bodyIndex.tail" (change)="updateBody()">
+							<option *ngFor="let t of options.tail; let i = index" [ngValue]="i">{{t.dn}}</option>
+						</select>
+					</div>
+				</div>
+			</form>
 		</div>
-	</form>
-
-	<form *ngIf="options" name="body-form">
-		<div class="form-group row">
-			<label class="col-sm-2 col-form-label" for="species">Species: </label>
-			<div class="col-10-md">
-				<select class="form-control" name="species" id="species" [(ngModel)]="bodyIndex.coat" (change)="updateBody()">
-					<option *ngFor="let p of options.coat; let i = index" [ngValue]="i">{{p.dn}}</option>
-				</select>
-			</div>
+		
+		<div class="col-sm-5">
+			<form name="colourForm">
+				<div class="form-group row">
+					<label class="col-sm-3 col-form-label" for="bodyColour">Body Colour: </label>
+					<div class="col-sm-9">
+							<input class="form-control" name="bodyColour" id="bodyColour" [(colorPicker)]="color" [style.background]="color"/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-3 col-form-label" for="markingsColour">Markings: </label>
+					<div class="col-sm-9">
+							<input class="form-control" name="markingsColour" id="markingsColour" [(colorPicker)]="color" [style.background]="color"/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-3 col-form-label" for="hairColour">Hair: </label>
+					<div class="col-sm-9">
+							<input class="form-control" name="hairColour" id="hairColour" [(colorPicker)]="color" [style.background]="color"/>
+					</div>
+				</div>
+				<div class="form-group row">
+					<label class="col-sm-3 col-form-label" for="noseColour">Nose: </label>
+					<div class="col-sm-9">
+							<input class="form-control" name="noseColour" id="noseColour" [(colorPicker)]="color" [style.background]="color"/>
+					</div>
+				</div>
+			</form>
 		</div>
-		<div class="form-group row">
-			<label class="col-sm-2 col-form-label" for="left-ear">Left Ear: </label>
-			<div class="col-10-md">
-				<select class="form-control" name="left-ear" id="left-ear" [(ngModel)]="bodyIndex.leftEar" (change)="updateBody()">
-					<option *ngFor="let le of options.leftEar; let i = index" [ngValue]="i">{{le.dn}}</option>
-				</select>
-			</div>
-		</div>
-		<div class="form-group row">
-			<label class="col-sm-2 col-form-label" for="right-ear">Right Ear: </label>
-			<div class="col-10-md">
-				<select class="form-control" name="right-ear" id="right-ear" [(ngModel)]="bodyIndex.rightEar" (change)="updateBody()">
-					<option *ngFor="let re of options.rightEar; let i = index" [ngValue]="i">{{re.dn}}</option>
-				</select>
-			</div>
-		</div>
-		<div class="form-group row">
-			<label class="col-sm-2 col-form-label" for="hair">Hair: </label>
-			<div class="col-10-md">
-				<select class="form-control" name="hair" id="hair" [(ngModel)]="bodyIndex.hair" (change)="updateBody()">
-					<option *ngFor="let h of options.hair; let i = index" [ngValue]="i">{{h.dn}}</option>
-				</select>
-			</div>
-		</div>
-		<div class="form-group row">
-			<label class="col-sm-2 col-form-label" for="tail">Tail: </label>
-			<div class="col-10-md">
-				<select class="form-control" name="tail" id="tail" [(ngModel)]="bodyIndex.tail" (change)="updateBody()">
-					<option *ngFor="let t of options.tail; let i = index" [ngValue]="i">{{t.dn}}</option>
-				</select>
-			</div>
-		</div>
-	</form>
+	</div>
 </div>

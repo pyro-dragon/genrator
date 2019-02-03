@@ -1,6 +1,7 @@
 import { Component, Input, ViewChild, ElementRef, KeyValueDiffers, DoCheck } from "@angular/core";
 import layout from "../../assets/layout.json";
 import { Body } from "../Body";
+import { combineLatest } from 'rxjs';
 declare var Caman: any;
 
 @Component({
@@ -100,6 +101,7 @@ export class CharacterDisplayComponent implements DoCheck {
 	JSON;
 	differ;
 	colourDiffer;
+	combinedSource = "/assets/layer1.png";
 
 	constructor(differs: KeyValueDiffers) {
 		this.JSON = JSON;
@@ -305,5 +307,35 @@ export class CharacterDisplayComponent implements DoCheck {
 		this.renderRightEar();
 		this.renderHair();
 		this.renderTail();
+	}
+
+	combine() {
+
+		// Create an invisible canvas to hold the combined layers
+		let canvas = document.createElement("canvas");
+		canvas.height = this.bodyColour.nativeElement.height;
+		canvas.width = this.bodyColour.nativeElement.width;
+
+		// Get the canvas context
+		let canvasContext = canvas.getContext("2d");
+
+		// Draw on the canvas layers
+		canvasContext.drawImage(this.tailColour.nativeElement, 0, 0);
+		canvasContext.drawImage(this.tailLines.nativeElement, 0, 0);
+		canvasContext.drawImage(this.bodyColour.nativeElement, 0, 0);
+		canvasContext.drawImage(this.bodyLines.nativeElement, 0, 0);
+		canvasContext.drawImage(this.leftEarColour.nativeElement, 0, 0);
+		canvasContext.drawImage(this.leftEarLines.nativeElement, 0, 0);
+		canvasContext.drawImage(this.hairColour.nativeElement, 0, 0);
+		canvasContext.drawImage(this.hairLines.nativeElement, 0, 0);
+		canvasContext.drawImage(this.rightEarColor.nativeElement, 0, 0);
+		canvasContext.drawImage(this.rightEarLines.nativeElement, 0, 0);
+
+		// Create an image string and display it
+		this.combinedSource = canvas.toDataURL("img/png");
+
+		// Alternatively, create and image object for later use
+		let imgObj = new Image();
+		imgObj.src = this.combinedSource;
 	}
 }

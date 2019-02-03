@@ -6,8 +6,13 @@
 	position: absolute;
 }
 
-canvas {
+.viewport canvas {
     background-color: transparent;
     width: 365px;
     height: 800px;
+}
+
+.combine {
+    width: 91.5px;
+    height: 200px;
 }

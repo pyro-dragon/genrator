@@ -10,6 +10,7 @@ export class Body {
 		markings: "", 
 		hair: "", 
 		nose: "", 
-		eyes: ""
+		eyes: "", 
+		claws: ""
 	}
 }

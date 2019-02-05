@@ -74,4 +74,8 @@ export class BodyFormComponent implements AfterContentInit {
 		this.body.hair = this.options.hair[this.bodyIndex.hair].fn;
 		this.body.tail = this.options.tail[this.bodyIndex.tail].fn;
 	}
+
+	setColour(partName, colour) {
+		this.body.colour[partName] = colour;
+	}
 }

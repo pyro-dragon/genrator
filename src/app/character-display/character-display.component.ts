@@ -37,7 +37,13 @@ export class CharacterDisplayComponent implements DoCheck {
 				striped: "Body/Striped Markings.png"
 			},
 			nose: "Body/Nose.png", 
+			claws: "Body/Claws.png"
 		}, 
+		eyes: {
+			whites: "Eyes/Whites.png", 
+			iris: "Eyes/Iris.png", 
+			pupils: "Eyes/Pupils.png"
+		},
 		leftEar: {
 			pointed: {
 				lines: "Left Ear/Pointed Lines.png", 
@@ -117,6 +123,7 @@ export class CharacterDisplayComponent implements DoCheck {
 				switch (change.key) {
 					case "base" : this.renderAll(); break;
 					case "coat" : this.renderCoat(); break;
+					case "eyes" : this.renderCoat(); break;
 					case "leftEar" : this.renderLeftEar(); break;
 					case "rightEar" : this.renderRightEar(); break;
 					case "hair" : this.renderHair(); break;
@@ -132,6 +139,8 @@ export class CharacterDisplayComponent implements DoCheck {
 			colourChanges.forEachChangedItem((change) => {
 				switch (change.key) {
 					case "body" : this.renderAll(); break;
+					case "eyes" : this.renderCoat(); break;
+					case "claws" : this.renderCoat(); break;
 					case "markings" : this.renderCoat(); this.renderTail(); break;
 					case "nose" : this.renderCoat(); break;
 					case "hair" : this.renderHair(); break;
@@ -145,9 +154,15 @@ export class CharacterDisplayComponent implements DoCheck {
 		const prefabRoot = this.imageMap.root + this.imageMap.base[this.body.base];
 		const coatBase = prefabRoot + this.imageMap.coat.colourBase;
 		const markingsBase = prefabRoot + this.imageMap.coat.markingsBase[this.body.coat];
+		const claws = prefabRoot + this.imageMap.coat.claws;
 		const nose = prefabRoot + this.imageMap.coat.nose;
 		const baseLines = prefabRoot + this.imageMap.coat.lines;
 		const colours = this.body.colour;
+		const eyes = {
+			whites: prefabRoot + this.imageMap.eyes.whites,
+			iris: prefabRoot + this.imageMap.eyes.iris,
+			pupils: prefabRoot + this.imageMap.eyes.pupils
+		}
 
 		this.bodyColour.nativeElement.removeAttribute("data-caman-id");
 		Caman(this.bodyColour.nativeElement, coatBase, function () {
@@ -164,6 +179,30 @@ export class CharacterDisplayComponent implements DoCheck {
 					this.overlayImage(nose);
 					this.newLayer(function() {
 						this.fillColor(colours.nose);
+					});
+				});
+
+				this.newLayer(function() {
+					this.overlayImage(eyes.whites);
+				});
+
+				this.newLayer(function() {
+					this.overlayImage(eyes.iris);
+					this.newLayer(function() {
+						this.fillColor(colours.eyes);
+					});
+				});
+				this.newLayer(function() {
+					this.overlayImage(eyes.pupils);
+					this.newLayer(function() {
+						this.fillColor("#000000");
+					});
+				});
+
+				this.newLayer(function() {
+					this.overlayImage(claws);
+					this.newLayer(function() {
+						this.fillColor(colours.claws);
 					});
 				});
 			});

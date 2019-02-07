@@ -63,6 +63,8 @@ export class BodyFormComponent implements AfterContentInit {
 		this.body.colour.markings = "#2b1e04";
 		this.body.colour.nose = "#0e0901";
 		this.body.colour.hair = "#ec8f23";
+		this.body.colour.eyes = "#0d5e04";
+		this.body.colour.claws = "#190800";
 	}
 
 	updateBody() {

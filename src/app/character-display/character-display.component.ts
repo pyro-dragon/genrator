@@ -23,6 +23,23 @@ export class CharacterDisplayComponent implements DoCheck {
 	@ViewChild("tailColour") tailColour: ElementRef;
 	@ViewChild("tailLines") tailLines: ElementRef;
 
+	// Create an invisible canvas to hold the combined layers
+	canvasCollection = {
+		bodyColour: document.createElement("bodyColour"),
+		bodyLines: document.createElement("bodyLines"),
+		hairColour: document.createElement("hairColour"),
+		hairLines: document.createElement("hairLines"),
+		leftEarColour: document.createElement("leftEarColour"),
+		leftEarLines: document.createElement("leftEarLines"),
+		rightEarColor: document.createElement("rightEarColor"),
+		rightEarLines: document.createElement("tailColour"),
+		tailColour: document.createElement("bodyColour"),
+		tailLines: document.createElement("tailLines")
+	};
+
+	height = 800;
+	width = 365;
+
 	imageMap = {
 		root: "/assets/Bodies/",
 		base: {
@@ -113,6 +130,11 @@ export class CharacterDisplayComponent implements DoCheck {
 		this.JSON = JSON;
 		this.differ = differs.find({}).create();
 		this.colourDiffer = differs.find({}).create();
+
+		for (let canvasName in this.canvasCollection) {
+			this.canvasCollection[canvasName].height = this.bodyColour.nativeElement.height;
+			this.canvasCollection[canvasName].width = this.bodyColour.nativeElement.width;
+		}
 	}
 
 	ngDoCheck() {

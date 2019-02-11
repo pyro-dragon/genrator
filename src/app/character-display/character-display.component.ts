@@ -2,6 +2,7 @@ import { Component, Input, ViewChild, ElementRef, KeyValueDiffers, DoCheck, Afte
 import layout from "../../assets/layout.json";
 import { Body } from "../Body";
 import { combineLatest } from 'rxjs';
+import { BodyColour } from '../BodyColour.js';
 declare var Caman: any;
 
 @Component({
@@ -11,17 +12,8 @@ declare var Caman: any;
 })
 export class CharacterDisplayComponent implements DoCheck, AfterContentInit {
 
-	@Input() body: Body;
-	// @ViewChild("bodyColour") bodyColour: ElementRef;
-	// @ViewChild("bodyLines") bodyLines: ElementRef;
-	// @ViewChild("hairColour") hairColour: ElementRef;
-	// @ViewChild("hairLines") hairLines: ElementRef;
-	// @ViewChild("leftEarColour") leftEarColour: ElementRef;
-	// @ViewChild("leftEarLines") leftEarLines: ElementRef;
-	// @ViewChild("rightEarColor") rightEarColor: ElementRef;
-	// @ViewChild("rightEarLines") rightEarLines: ElementRef;
-	// @ViewChild("tailColour") tailColour: ElementRef;
-	// @ViewChild("tailLines") tailLines: ElementRef;
+	@Input("body") outsideBody: Body;
+	body;
 
 	// Create an invisible canvas to hold the combined layers
 	canvasCollection = {
@@ -35,16 +27,6 @@ export class CharacterDisplayComponent implements DoCheck, AfterContentInit {
 		rightEarLines: document.createElement("canvas"),
 		tailColour: document.createElement("canvas"),
 		tailLines: document.createElement("canvas")
-		// bodyColour: document.createElement("bodyColour"),
-		// bodyLines: document.createElement("bodyLines"),
-		// hairColour: document.createElement("hairColour"),
-		// hairLines: document.createElement("hairLines"),
-		// leftEarColour: document.createElement("leftEarColour"),
-		// leftEarLines: document.createElement("leftEarLines"),
-		// rightEarColor: document.createElement("rightEarColor"),
-		// rightEarLines: document.createElement("tailColour"),
-		// tailColour: document.createElement("bodyColour"),
-		// tailLines: document.createElement("tailLines")
 	};
 
 	imageMap = {
@@ -141,6 +123,7 @@ export class CharacterDisplayComponent implements DoCheck, AfterContentInit {
 
 	constructor(differs: KeyValueDiffers) {
 		this.JSON = JSON;
+		this.body = new Body("", "", "", "", "", "", new BodyColour("", "", "", "", "", ""));
 		this.differ = differs.find({}).create();
 		this.colourDiffer = differs.find({}).create();
 
@@ -153,8 +136,14 @@ export class CharacterDisplayComponent implements DoCheck, AfterContentInit {
 	}
 
 	ngAfterContentInit() {
-		this.contentAvailable = true;
+		// this.contentAvailable = true;
 		this.render();
+
+		this.body = this.outsideBody;
+	}
+
+	change() {
+		this.body.base = "female";
 	}
 
 	ngDoCheck() {
@@ -163,14 +152,16 @@ export class CharacterDisplayComponent implements DoCheck, AfterContentInit {
 			// do something if changes were found
 			changes.forEachChangedItem((change) => {
 				switch (change.key) {
-					case "base" : this.renderAll(this.render()); break;
-					case "coat" : this.renderCoat(this.render()); break;
-					case "eyes" : this.renderCoat(this.render()); break;
-					case "leftEar" : this.renderLeftEar(this.render()); break;
-					case "rightEar" : this.renderRightEar(this.render()); break;
-					case "hair" : this.renderHair(this.render()); break;
-					case "tail" : this.renderTail(this.render()); break;
-					default : this.renderAll(this.render());
+					case "base" : this.renderAll().then(() => {this.render(); }); break;
+					case "coat" : this.renderCoat().then(() => {this.render(); }); break;
+					case "eyes" : this.renderCoat().then(() => {this.render(); }); break;
+					case "leftEar" : this.renderLeftEar().then(() => {this.render(); }); break;
+					case "rightEar" : this.renderRightEar().then(() => {this.render(); }); break;
+					case "hair" : this.renderHair().then(() => {
+						this.render(); 
+					}); break;
+					case "tail" : this.renderTail().then(() => {this.render(); }); break;
+					default : this.renderAll().then(() => {this.render(); });
 				}
 			});
 		}
@@ -180,29 +171,40 @@ export class CharacterDisplayComponent implements DoCheck, AfterContentInit {
 			// do something if changes were found
 			colourChanges.forEachChangedItem((change) => {
 				switch (change.key) {
-					case "body" : this.renderAll(this.render()); break;
-					case "eyes" : this.renderCoat(this.render()); break;
-					case "claws" : this.renderCoat(this.render()); break;
-					case "markings" : this.renderCoat(this.renderTail(this.render())); break;
-					case "nose" : this.renderCoat(this.render()); break;
-					case "hair" : this.renderHair(this.render()); break;
+					case "body" : this.renderAll().then(() => {this.render(); }); break;
+					case "eyes" : this.renderCoat().then(() => {this.render(); }); break;
+					case "claws" : this.renderCoat().then(() => {this.render(); }); break;
+					// case "markings" : this.renderCoat().then(() => {this.renderTail().then(this.render); }); break;
+					case "nose" : this.renderCoat().then(() => {this.render(); }); break;
+					case "hair" : this.renderHair().then(() => {
+						this.render(); 
+					}); break;
 					// default : this.renderAll();
 				}
 			});
 		}
 
 		if (changes || colourChanges) {
+
+			console.log("Change detected: " + this.extractChangesMap(changes) + "\nColour detected: " + this.extractChangesMap(colourChanges));
+			// console.log("rendering... ");
 			this.render();
 		}
 	}
 
-	renderCoat(onRenderComplete) {
-		this.outstandingRenderCount += 1;
-		const renderEvent = new Promise((resolve) => {
-			if (typeof resolve === "function") {
-				resolve();
-			}
-		});
+	extractChangesMap(changes) {
+		let outputString = "";
+
+		if (changes) {
+			changes._records.forEach(i => {
+				outputString += i.key + ": '" + i.previousValue + "' => '" + i.currentValue + "'\n";
+			});
+		}
+
+		return outputString;
+	}
+
+	renderCoat() {
 
 		const prefabRoot = this.imageMap.root + this.imageMap.base[this.body.base];
 		const coatBase = prefabRoot + this.imageMap.coat.colourBase;
@@ -279,16 +281,10 @@ export class CharacterDisplayComponent implements DoCheck, AfterContentInit {
 			});
 		});
 
-		Promise.all([bodyColourPromise, bodyLinesPromise]).then(() => {
-			if (typeof onRenderComplete === "function") {
-				onRenderComplete();
-			}
-		});
-
-		return renderEvent;
+		return Promise.all([bodyColourPromise, bodyLinesPromise]);
 	}
 
-	renderLeftEar(onRenderComplete) {
+	renderLeftEar() {
 
 		const prefabRoot = this.imageMap.root + this.imageMap.base[this.body.base];
 		const leftEarBase = this.body.leftEar ? prefabRoot + this.imageMap.leftEar[this.body.leftEar].colourBase : "";
@@ -319,14 +315,10 @@ export class CharacterDisplayComponent implements DoCheck, AfterContentInit {
 			});
 		});
 
-		Promise.all([leftEarColourPromise, leftEarLinesPromise]).then(() => {
-			if (typeof onRenderComplete === "function") {
-				onRenderComplete();
-			}
-		});
+		return Promise.all([leftEarColourPromise, leftEarLinesPromise]);
 	}
 
-	renderRightEar(onRenderComplete) {
+	renderRightEar() {
 
 		const prefabRoot = this.imageMap.root + this.imageMap.base[this.body.base];
 		const rightEarBase = this.body.rightEar ? prefabRoot + this.imageMap.rightEar[this.body.rightEar].colourBase : "";
@@ -357,14 +349,10 @@ export class CharacterDisplayComponent implements DoCheck, AfterContentInit {
 			});
 		});
 
-		Promise.all([rightEarColorPromise, rightEarLinesPromise]).then(() => {
-			if (typeof onRenderComplete === "function") {
-				onRenderComplete();
-			}
-		});
+		return Promise.all([rightEarColorPromise, rightEarLinesPromise]);
 	}
 
-	renderHair(onRenderComplete) {
+	renderHair() {
 
 		const prefabRoot = this.imageMap.root + this.imageMap.base[this.body.base];
 		const hairBase = this.body.hair ? prefabRoot + this.imageMap.hair[this.body.hair].colourBase : "";
@@ -395,14 +383,10 @@ export class CharacterDisplayComponent implements DoCheck, AfterContentInit {
 			});
 		});
 
-		Promise.all([hairColourPromise, hairLinesPromise]).then(() => {
-			if (typeof onRenderComplete === "function") {
-				onRenderComplete();
-			}
-		});
+		return Promise.all([hairColourPromise, hairLinesPromise]);
 	}
 
-	renderTail(onRenderComplete) {
+	renderTail() {
 
 		const prefabRoot = this.imageMap.root + this.imageMap.base[this.body.base];
 		const tailBase = this.body.tail ? prefabRoot + this.imageMap.tail[this.body.tail].colourBase : "";
@@ -440,33 +424,21 @@ export class CharacterDisplayComponent implements DoCheck, AfterContentInit {
 			});
 		});
 
-		Promise.all([tailColourPromise, tailLinesPromise]).then(() => {
-			if (typeof onRenderComplete === "function") {
-				onRenderComplete();
-			}
-		});
+		return Promise.all([tailColourPromise, tailLinesPromise]);
 	}
 
-	renderAll(onRenderComplete) {
-		const renderCoat = new Promise((resolve) => this.renderCoat(resolve()));
-		const renderLeftEar = new Promise((resolve) => this.renderLeftEar(resolve()));
-		const renderRightEar = new Promise((resolve) => this.renderRightEar(resolve()));
-		const renderHair = new Promise((resolve) => this.renderHair(resolve()));
-		const renderTail = new Promise((resolve) => this.renderTail(resolve()));
-
-		Promise.all([renderCoat, renderLeftEar, renderRightEar, renderHair, renderTail]).then(() => {
-			if (typeof onRenderComplete === "function") {
-				onRenderComplete();
-			}
-		});
+	renderAll() {
+		return Promise.all([this.renderCoat(), this.renderLeftEar(), this.renderRightEar(), this.renderHair(), this.renderTail()]);
 	}
 
-	combine() {
-
+	/** 
+	 * A render function for outputting an image composed from all layers.
+	*/
+	render() {
 		// Create an invisible canvas to hold the combined layers
 		const canvas = document.createElement("canvas");
-		canvas.height = this.canvasCollection.bodyColour.height;
-		canvas.width = this.canvasCollection.bodyColour.width;
+		canvas.height = this.height;
+		canvas.width = this.width;
 
 		// Get the canvas context
 		const canvasContext = canvas.getContext("2d");
@@ -484,40 +456,7 @@ export class CharacterDisplayComponent implements DoCheck, AfterContentInit {
 		canvasContext.drawImage(this.canvasCollection.rightEarLines, 0, 0);
 
 		// Create an image string and display it
-		this.combinedSource = canvas.toDataURL("img/png");
-
-		// Alternatively, create and image object for later use
-		const imgObj = new Image();
-		imgObj.src = this.combinedSource;
-	}
-
-	/** 
-	 * A render function for outputting an image composed from all layers.
-	*/
-	render() {
-		if (this.contentAvailable) {
-			// Create an invisible canvas to hold the combined layers
-			const canvas = document.createElement("canvas");
-			canvas.height = this.height;
-			canvas.width = this.width;
-	
-			// Get the canvas context
-			const canvasContext = canvas.getContext("2d");
-	
-			// Draw on the canvas layers
-			canvasContext.drawImage(this.canvasCollection.tailColour, 0, 0);
-			canvasContext.drawImage(this.canvasCollection.tailLines, 0, 0);
-			canvasContext.drawImage(this.canvasCollection.bodyColour, 0, 0);
-			canvasContext.drawImage(this.canvasCollection.bodyLines, 0, 0);
-			canvasContext.drawImage(this.canvasCollection.leftEarColour, 0, 0);
-			canvasContext.drawImage(this.canvasCollection.leftEarLines, 0, 0);
-			canvasContext.drawImage(this.canvasCollection.hairColour, 0, 0);
-			canvasContext.drawImage(this.canvasCollection.hairLines, 0, 0);
-			canvasContext.drawImage(this.canvasCollection.rightEarColor, 0, 0);
-			canvasContext.drawImage(this.canvasCollection.rightEarLines, 0, 0);
-	
-			// Create an image string and display it
-			this.renderedSrc = canvas.toDataURL("img/png");
-		}
+			console.log("Rendering to png");
+		this.renderedSrc = canvas.toDataURL("img/png");
 	}
 }

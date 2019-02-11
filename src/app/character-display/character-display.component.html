@@ -1,18 +1,7 @@
 <div>
+	<button (click)="render()">Render</button>
+	<button (click)="change()">Change</button>
 	<div class="viewport">
-		<!-- <canvas #bodyColour width="800" height="365"></canvas>
-		<canvas #bodyLines width="365" height="800"></canvas>
-		<canvas #tailColour width="365" height="800"></canvas>
-		<canvas #tailLines width="365" height="800"></canvas>
-		<canvas #leftEarColour width="365" height="800"></canvas>
-		<canvas #leftEarLines width="365" height="800"></canvas>
-		<canvas #hairColour width="365" height="800"></canvas>
-		<canvas #hairLines width="365" height="800"></canvas>
-		<canvas #rightEarColor width="365" height="800"></canvas>
-		<canvas #rightEarLines width="365" height="800"></canvas> -->
-		
 		<img class="render" [src]="renderedSrc" />
 	</div>
-	<button (click)="combine()">Combine</button>
-	<img class="combine" [src]="combinedSource" />
 </div>

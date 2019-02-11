@@ -174,7 +174,7 @@ export class CharacterDisplayComponent implements DoCheck, AfterContentInit {
 					case "body" : this.renderAll().then(() => {this.render(); }); break;
 					case "eyes" : this.renderCoat().then(() => {this.render(); }); break;
 					case "claws" : this.renderCoat().then(() => {this.render(); }); break;
-					// case "markings" : this.renderCoat().then(() => {this.renderTail().then(this.render); }); break;
+					case "markings" : this.renderCoat().then(() => {this.renderTail().then(() => {this.render(); }); }); break;
 					case "nose" : this.renderCoat().then(() => {this.render(); }); break;
 					case "hair" : this.renderHair().then(() => {
 						this.render(); 
@@ -186,23 +186,23 @@ export class CharacterDisplayComponent implements DoCheck, AfterContentInit {
 
 		if (changes || colourChanges) {
 
-			console.log("Change detected: " + this.extractChangesMap(changes) + "\nColour detected: " + this.extractChangesMap(colourChanges));
+			// console.log("Change detected: " + this.extractChangesMap(changes) + "\nColour detected: " + this.extractChangesMap(colourChanges));
 			// console.log("rendering... ");
 			this.render();
 		}
 	}
 
-	extractChangesMap(changes) {
-		let outputString = "";
+	// extractChangesMap(changes) {
+	// 	let outputString = "";
 
-		if (changes) {
-			changes._records.forEach(i => {
-				outputString += i.key + ": '" + i.previousValue + "' => '" + i.currentValue + "'\n";
-			});
-		}
+	// 	if (changes) {
+	// 		changes._records.forEach(i => {
+	// 			outputString += i.key + ": '" + i.previousValue + "' => '" + i.currentValue + "'\n";
+	// 		});
+	// 	}
 
-		return outputString;
-	}
+	// 	return outputString;
+	// }
 
 	renderCoat() {
 
@@ -263,9 +263,7 @@ export class CharacterDisplayComponent implements DoCheck, AfterContentInit {
 					});
 				});
 
-				this.render(() => {
-					resolve("Render Success!");
-				});
+				this.render(() => { resolve(); });
 			});
 		});
 
@@ -277,7 +275,7 @@ export class CharacterDisplayComponent implements DoCheck, AfterContentInit {
 					this.fillColor("#000000");
 				});
 
-				this.render(resolve("Render Success!"));
+				this.render(() => { resolve(); });
 			});
 		});
 
@@ -299,7 +297,7 @@ export class CharacterDisplayComponent implements DoCheck, AfterContentInit {
 					this.fillColor(colours.body);
 				});
 
-				this.render(resolve());
+				this.render(() => { resolve(); });
 			});
 		});
 
@@ -311,7 +309,7 @@ export class CharacterDisplayComponent implements DoCheck, AfterContentInit {
 					this.fillColor("#000000");
 				});
 
-				this.render(resolve());
+				this.render(() => { resolve(); });
 			});
 		});
 
@@ -333,7 +331,7 @@ export class CharacterDisplayComponent implements DoCheck, AfterContentInit {
 					this.fillColor(colours.body);
 				});
 
-				this.render(resolve());
+				this.render(() => { resolve(); });
 			});
 		});
 
@@ -345,7 +343,7 @@ export class CharacterDisplayComponent implements DoCheck, AfterContentInit {
 					this.fillColor("#000000");
 				});
 
-				this.render(resolve());
+				this.render(() => { resolve(); });
 			});
 		});
 
@@ -367,7 +365,7 @@ export class CharacterDisplayComponent implements DoCheck, AfterContentInit {
 					this.fillColor(colours.hair);
 				});
 
-				this.render(resolve());
+				this.render(() => { resolve(); });
 			});
 		});
 
@@ -379,7 +377,7 @@ export class CharacterDisplayComponent implements DoCheck, AfterContentInit {
 					this.fillColor("#000000");
 				});
 
-				this.render(resolve());
+				this.render(() => { resolve(); });
 			});
 		});
 
@@ -408,7 +406,7 @@ export class CharacterDisplayComponent implements DoCheck, AfterContentInit {
 					});
 				});
 
-				this.render(resolve());
+				this.render(() => { resolve(); });
 			});
 		});
 
@@ -420,7 +418,7 @@ export class CharacterDisplayComponent implements DoCheck, AfterContentInit {
 					this.fillColor("#000000");
 				});
 
-				this.render(resolve());
+				this.render(() => { resolve(); });
 			});
 		});
 
@@ -456,7 +454,7 @@ export class CharacterDisplayComponent implements DoCheck, AfterContentInit {
 		canvasContext.drawImage(this.canvasCollection.rightEarLines, 0, 0);
 
 		// Create an image string and display it
-			console.log("Rendering to png");
+		console.log("Rendering to png");
 		this.renderedSrc = canvas.toDataURL("img/png");
 	}
 }

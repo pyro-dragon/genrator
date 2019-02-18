@@ -1,7 +1,8 @@
-import { Component, Input, ViewChild, ElementRef, KeyValueDiffers, DoCheck } from "@angular/core";
+import { Component, Input, ViewChild, ElementRef, KeyValueDiffers, DoCheck, AfterContentInit } from "@angular/core";
 import layout from "../../assets/layout.json";
 import { Body } from "../Body";
 import { combineLatest } from 'rxjs';
+import { BodyColour } from '../BodyColour.js';
 declare var Caman: any;
 
 @Component({
@@ -9,19 +10,24 @@ declare var Caman: any;
 	templateUrl: "./character-display.component.html",
 	styleUrls: ["./character-display.component.css"]
 })
-export class CharacterDisplayComponent implements DoCheck {
+export class CharacterDisplayComponent implements DoCheck, AfterContentInit {
 
-	@Input() body: Body;
-	@ViewChild("bodyColour") bodyColour: ElementRef;
-	@ViewChild("bodyLines") bodyLines: ElementRef;
-	@ViewChild("hairColour") hairColour: ElementRef;
-	@ViewChild("hairLines") hairLines: ElementRef;
-	@ViewChild("leftEarColour") leftEarColour: ElementRef;
-	@ViewChild("leftEarLines") leftEarLines: ElementRef;
-	@ViewChild("rightEarColor") rightEarColor: ElementRef;
-	@ViewChild("rightEarLines") rightEarLines: ElementRef;
-	@ViewChild("tailColour") tailColour: ElementRef;
-	@ViewChild("tailLines") tailLines: ElementRef;
+	@Input("body") outsideBody: Body;
+	body;
+
+	// Create an invisible canvas to hold the combined layers
+	canvasCollection = {
+		bodyColour: document.createElement("canvas"),
+		bodyLines: document.createElement("canvas"),
+		hairColour: document.createElement("canvas"),
+		hairLines: document.createElement("canvas"),
+		leftEarColour: document.createElement("canvas"),
+		leftEarLines: document.createElement("canvas"),
+		rightEarColor: document.createElement("canvas"),
+		rightEarLines: document.createElement("canvas"),
+		tailColour: document.createElement("canvas"),
+		tailLines: document.createElement("canvas")
+	};
 
 	imageMap = {
 		root: "/assets/Bodies/",
@@ -108,11 +114,36 @@ export class CharacterDisplayComponent implements DoCheck {
 	differ;
 	colourDiffer;
 	combinedSource = "/assets/layer1.png";
+	renderedSrc = "";
+	outstandingRenderCount = 0;
+
+	height = 800;
+	width = 365;
+	contentAvailable = false;
 
 	constructor(differs: KeyValueDiffers) {
 		this.JSON = JSON;
+		this.body = new Body("", "", "", "", "", "", new BodyColour("", "", "", "", "", ""));
 		this.differ = differs.find({}).create();
 		this.colourDiffer = differs.find({}).create();
+
+		for (const canvasName in this.canvasCollection) {
+			if (this.canvasCollection[canvasName]) {
+				this.canvasCollection[canvasName].height = this.height;
+				this.canvasCollection[canvasName].width = this.width;
+			}
+		}
+	}
+
+	ngAfterContentInit() {
+		// this.contentAvailable = true;
+		this.render();
+
+		this.body = this.outsideBody;
+	}
+
+	change() {
+		this.body.base = "female";
 	}
 
 	ngDoCheck() {
@@ -121,14 +152,16 @@ export class CharacterDisplayComponent implements DoCheck {
 			// do something if changes were found
 			changes.forEachChangedItem((change) => {
 				switch (change.key) {
-					case "base" : this.renderAll(); break;
-					case "coat" : this.renderCoat(); break;
-					case "eyes" : this.renderCoat(); break;
-					case "leftEar" : this.renderLeftEar(); break;
-					case "rightEar" : this.renderRightEar(); break;
-					case "hair" : this.renderHair(); break;
-					case "tail" : this.renderTail(); break;
-					default : this.renderAll();
+					case "base" : this.renderAll().then(() => {this.render(); }); break;
+					case "coat" : this.renderCoat().then(() => {this.render(); }); break;
+					case "eyes" : this.renderCoat().then(() => {this.render(); }); break;
+					case "leftEar" : this.renderLeftEar().then(() => {this.render(); }); break;
+					case "rightEar" : this.renderRightEar().then(() => {this.render(); }); break;
+					case "hair" : this.renderHair().then(() => {
+						this.render(); 
+					}); break;
+					case "tail" : this.renderTail().then(() => {this.render(); }); break;
+					default : this.renderAll().then(() => {this.render(); });
 				}
 			});
 		}
@@ -138,19 +171,41 @@ export class CharacterDisplayComponent implements DoCheck {
 			// do something if changes were found
 			colourChanges.forEachChangedItem((change) => {
 				switch (change.key) {
-					case "body" : this.renderAll(); break;
-					case "eyes" : this.renderCoat(); break;
-					case "claws" : this.renderCoat(); break;
-					case "markings" : this.renderCoat(); this.renderTail(); break;
-					case "nose" : this.renderCoat(); break;
-					case "hair" : this.renderHair(); break;
-					//default : this.renderAll();
+					case "body" : this.renderAll().then(() => {this.render(); }); break;
+					case "eyes" : this.renderCoat().then(() => {this.render(); }); break;
+					case "claws" : this.renderCoat().then(() => {this.render(); }); break;
+					case "markings" : this.renderCoat().then(() => {this.renderTail().then(() => {this.render(); }); }); break;
+					case "nose" : this.renderCoat().then(() => {this.render(); }); break;
+					case "hair" : this.renderHair().then(() => {
+						this.render(); 
+					}); break;
+					// default : this.renderAll();
 				}
 			});
 		}
+
+		if (changes || colourChanges) {
+
+			// console.log("Change detected: " + this.extractChangesMap(changes) + "\nColour detected: " + this.extractChangesMap(colourChanges));
+			// console.log("rendering... ");
+			this.render();
+		}
 	}
 
+	// extractChangesMap(changes) {
+	// 	let outputString = "";
+
+	// 	if (changes) {
+	// 		changes._records.forEach(i => {
+	// 			outputString += i.key + ": '" + i.previousValue + "' => '" + i.currentValue + "'\n";
+	// 		});
+	// 	}
+
+	// 	return outputString;
+	// }
+
 	renderCoat() {
+
 		const prefabRoot = this.imageMap.root + this.imageMap.base[this.body.base];
 		const coatBase = prefabRoot + this.imageMap.coat.colourBase;
 		const markingsBase = prefabRoot + this.imageMap.coat.markingsBase[this.body.coat];
@@ -162,63 +217,69 @@ export class CharacterDisplayComponent implements DoCheck {
 			whites: prefabRoot + this.imageMap.eyes.whites,
 			iris: prefabRoot + this.imageMap.eyes.iris,
 			pupils: prefabRoot + this.imageMap.eyes.pupils
-		}
+		};
 
-		this.bodyColour.nativeElement.removeAttribute("data-caman-id");
-		Caman(this.bodyColour.nativeElement, coatBase, function () {
-			this.newLayer(function() {
-				this.fillColor(colours.body);
+		this.canvasCollection.bodyColour.removeAttribute("data-caman-id");
+		const bodyColourPromise = new Promise((resolve) => {
+			Caman(this.canvasCollection.bodyColour, coatBase, function () {
 				this.newLayer(function() {
-					this.overlayImage(markingsBase);
+					this.fillColor(colours.body);
 					this.newLayer(function() {
-						this.fillColor(colours.markings);
+						this.overlayImage(markingsBase);
+						this.newLayer(function() {
+							this.fillColor(colours.markings);
+						});
+					});
+
+					this.newLayer(function() {
+						this.overlayImage(nose);
+						this.newLayer(function() {
+							this.fillColor(colours.nose);
+						});
+					});
+
+					this.newLayer(function() {
+						this.overlayImage(eyes.whites);
+					});
+
+					this.newLayer(function() {
+						this.overlayImage(eyes.iris);
+						this.newLayer(function() {
+							this.fillColor(colours.eyes);
+						});
+					});
+					this.newLayer(function() {
+						this.overlayImage(eyes.pupils);
+						this.newLayer(function() {
+							this.fillColor("#000000");
+						});
+					});
+
+					this.newLayer(function() {
+						this.overlayImage(claws);
+						this.newLayer(function() {
+							this.fillColor(colours.claws);
+						});
 					});
 				});
 
-				this.newLayer(function() {
-					this.overlayImage(nose);
-					this.newLayer(function() {
-						this.fillColor(colours.nose);
-					});
-				});
-
-				this.newLayer(function() {
-					this.overlayImage(eyes.whites);
-				});
-
-				this.newLayer(function() {
-					this.overlayImage(eyes.iris);
-					this.newLayer(function() {
-						this.fillColor(colours.eyes);
-					});
-				});
-				this.newLayer(function() {
-					this.overlayImage(eyes.pupils);
-					this.newLayer(function() {
-						this.fillColor("#000000");
-					});
-				});
-
-				this.newLayer(function() {
-					this.overlayImage(claws);
-					this.newLayer(function() {
-						this.fillColor(colours.claws);
-					});
-				});
+				this.render(() => { resolve(); });
 			});
-
-			this.render();
 		});
 
-		this.bodyLines.nativeElement.removeAttribute("data-caman-id");
-		Caman(this.bodyLines.nativeElement, baseLines, function () {
-			this.newLayer(function() {
-				this.setBlendingMode("normal");
-				this.fillColor("#000000");
-			});
+		this.canvasCollection.bodyLines.removeAttribute("data-caman-id");
+		const bodyLinesPromise = new Promise((resolve) => {
+			Caman(this.canvasCollection.bodyLines, baseLines, function () {
+				this.newLayer(function() {
+					this.setBlendingMode("normal");
+					this.fillColor("#000000");
+				});
 
-			this.render();
+				this.render(() => { resolve(); });
+			});
 		});
+
+		return Promise.all([bodyColourPromise, bodyLinesPromise]);
 	}
 
 	renderLeftEar() {
@@ -228,25 +289,31 @@ export class CharacterDisplayComponent implements DoCheck {
 		const leftEarLines = this.body.leftEar ? prefabRoot + this.imageMap.leftEar[this.body.leftEar].lines : "";
 		const colours = this.body.colour;
 
-		this.leftEarColour.nativeElement.removeAttribute("data-caman-id");
-		Caman(this.leftEarColour.nativeElement, leftEarBase, function () {
-			this.newLayer(function() {
-				this.setBlendingMode("normal");
-				this.fillColor(colours.body);
-			});
+		this.canvasCollection.leftEarColour.removeAttribute("data-caman-id");
+		const leftEarColourPromise = new Promise((resolve) => {
+			Caman(this.canvasCollection.leftEarColour, leftEarBase, function () {
+				this.newLayer(function() {
+					this.setBlendingMode("normal");
+					this.fillColor(colours.body);
+				});
 
-			this.render();
+				this.render(() => { resolve(); });
+			});
 		});
 
-		this.leftEarLines.nativeElement.removeAttribute("data-caman-id");
-		Caman(this.leftEarLines.nativeElement, leftEarLines, function () {
-			this.newLayer(function() {
-				this.setBlendingMode("normal");
-				this.fillColor("#000000");
-			});
+		this.canvasCollection.leftEarLines.removeAttribute("data-caman-id");
+		const leftEarLinesPromise = new Promise((resolve) => {
+			Caman(this.canvasCollection.leftEarLines, leftEarLines, function () {
+				this.newLayer(function() {
+					this.setBlendingMode("normal");
+					this.fillColor("#000000");
+				});
 
-			this.render();
+				this.render(() => { resolve(); });
+			});
 		});
+
+		return Promise.all([leftEarColourPromise, leftEarLinesPromise]);
 	}
 
 	renderRightEar() {
@@ -256,25 +323,31 @@ export class CharacterDisplayComponent implements DoCheck {
 		const rightEarLines = this.body.rightEar ?  prefabRoot + this.imageMap.rightEar[this.body.rightEar].lines : "";
 		const colours = this.body.colour;
 
-		this.rightEarColor.nativeElement.removeAttribute("data-caman-id");
-		Caman(this.rightEarColor.nativeElement, rightEarBase, function () {
-			this.newLayer(function() {
-				this.setBlendingMode("normal");
-				this.fillColor(colours.body);
-			});
+		this.canvasCollection.rightEarColor.removeAttribute("data-caman-id");
+		const rightEarColorPromise = new Promise((resolve) => {
+			Caman(this.canvasCollection.rightEarColor, rightEarBase, function () {
+				this.newLayer(function() {
+					this.setBlendingMode("normal");
+					this.fillColor(colours.body);
+				});
 
-			this.render();
+				this.render(() => { resolve(); });
+			});
 		});
 
-		this.rightEarLines.nativeElement.removeAttribute("data-caman-id");
-		Caman(this.rightEarLines.nativeElement, rightEarLines, function () {
-			this.newLayer(function() {
-				this.setBlendingMode("normal");
-				this.fillColor("#000000");
-			});
+		this.canvasCollection.rightEarLines.removeAttribute("data-caman-id");
+		const rightEarLinesPromise = new Promise((resolve) => {
+			Caman(this.canvasCollection.rightEarLines, rightEarLines, function () {
+				this.newLayer(function() {
+					this.setBlendingMode("normal");
+					this.fillColor("#000000");
+				});
 
-			this.render();
+				this.render(() => { resolve(); });
+			});
 		});
+
+		return Promise.all([rightEarColorPromise, rightEarLinesPromise]);
 	}
 
 	renderHair() {
@@ -284,25 +357,31 @@ export class CharacterDisplayComponent implements DoCheck {
 		const hairLines = this.body.hair ? prefabRoot + this.imageMap.hair[this.body.hair].lines : "";
 		const colours = this.body.colour;
 
-		this.hairColour.nativeElement.removeAttribute("data-caman-id");
-		Caman(this.hairColour.nativeElement, hairBase, function () {
-			this.newLayer(function() {
-				this.setBlendingMode("normal");
-				this.fillColor(colours.hair);
-			});
+		this.canvasCollection.hairColour.removeAttribute("data-caman-id");
+		const hairColourPromise = new Promise((resolve) => {
+			Caman(this.canvasCollection.hairColour, hairBase, function () {
+				this.newLayer(function() {
+					this.setBlendingMode("normal");
+					this.fillColor(colours.hair);
+				});
 
-			this.render();
+				this.render(() => { resolve(); });
+			});
 		});
 
-		this.hairLines.nativeElement.removeAttribute("data-caman-id");
-		Caman(this.hairLines.nativeElement, hairLines, function () {
-			this.newLayer(function() {
-				this.setBlendingMode("normal");
-				this.fillColor("#000000");
-			});
+		this.canvasCollection.hairLines.removeAttribute("data-caman-id");
+		const hairLinesPromise = new Promise((resolve) => {
+			Caman(this.canvasCollection.hairLines, hairLines, function () {
+				this.newLayer(function() {
+					this.setBlendingMode("normal");
+					this.fillColor("#000000");
+				});
 
-			this.render();
+				this.render(() => { resolve(); });
+			});
 		});
+
+		return Promise.all([hairColourPromise, hairLinesPromise]);
 	}
 
 	renderTail() {
@@ -313,68 +392,69 @@ export class CharacterDisplayComponent implements DoCheck {
 		const tailLines = this.body.tail ? prefabRoot + this.imageMap.tail[this.body.tail].lines : "";
 		const colours = this.body.colour;
 
-		this.tailColour.nativeElement.removeAttribute("data-caman-id");
-		Caman(this.tailColour.nativeElement, tailBase, function () {
-			this.newLayer(function() {
-				this.setBlendingMode("normal");
-				this.fillColor(colours.body);
+		this.canvasCollection.tailColour.removeAttribute("data-caman-id");
+		const tailColourPromise = new Promise((resolve) => {
+			Caman(this.canvasCollection.tailColour, tailBase, function () {
 				this.newLayer(function() {
-					this.overlayImage(tailMarkings);
+					this.setBlendingMode("normal");
+					this.fillColor(colours.body);
 					this.newLayer(function() {
-						this.fillColor(colours.markings);
+						this.overlayImage(tailMarkings);
+						this.newLayer(function() {
+							this.fillColor(colours.markings);
+						});
 					});
 				});
-			});
 
-			this.render();
+				this.render(() => { resolve(); });
+			});
 		});
 
-		this.tailLines.nativeElement.removeAttribute("data-caman-id");
-		Caman(this.tailLines.nativeElement, tailLines, function () {
-			this.newLayer(function() {
-				this.setBlendingMode("normal");
-				this.fillColor("#000000");
-			});
+		this.canvasCollection.tailLines.removeAttribute("data-caman-id");
+		const tailLinesPromise = new Promise((resolve) => {
+			Caman(this.canvasCollection.tailLines, tailLines, function () {
+				this.newLayer(function() {
+					this.setBlendingMode("normal");
+					this.fillColor("#000000");
+				});
 
-			this.render();
+				this.render(() => { resolve(); });
+			});
 		});
+
+		return Promise.all([tailColourPromise, tailLinesPromise]);
 	}
 
 	renderAll() {
-		this.renderCoat();
-		this.renderLeftEar();
-		this.renderRightEar();
-		this.renderHair();
-		this.renderTail();
+		return Promise.all([this.renderCoat(), this.renderLeftEar(), this.renderRightEar(), this.renderHair(), this.renderTail()]);
 	}
 
-	combine() {
-
+	/** 
+	 * A render function for outputting an image composed from all layers.
+	*/
+	render() {
 		// Create an invisible canvas to hold the combined layers
-		let canvas = document.createElement("canvas");
-		canvas.height = this.bodyColour.nativeElement.height;
-		canvas.width = this.bodyColour.nativeElement.width;
+		const canvas = document.createElement("canvas");
+		canvas.height = this.height;
+		canvas.width = this.width;
 
 		// Get the canvas context
-		let canvasContext = canvas.getContext("2d");
+		const canvasContext = canvas.getContext("2d");
 
 		// Draw on the canvas layers
-		canvasContext.drawImage(this.tailColour.nativeElement, 0, 0);
-		canvasContext.drawImage(this.tailLines.nativeElement, 0, 0);
-		canvasContext.drawImage(this.bodyColour.nativeElement, 0, 0);
-		canvasContext.drawImage(this.bodyLines.nativeElement, 0, 0);
-		canvasContext.drawImage(this.leftEarColour.nativeElement, 0, 0);
-		canvasContext.drawImage(this.leftEarLines.nativeElement, 0, 0);
-		canvasContext.drawImage(this.hairColour.nativeElement, 0, 0);
-		canvasContext.drawImage(this.hairLines.nativeElement, 0, 0);
-		canvasContext.drawImage(this.rightEarColor.nativeElement, 0, 0);
-		canvasContext.drawImage(this.rightEarLines.nativeElement, 0, 0);
+		canvasContext.drawImage(this.canvasCollection.tailColour, 0, 0);
+		canvasContext.drawImage(this.canvasCollection.tailLines, 0, 0);
+		canvasContext.drawImage(this.canvasCollection.bodyColour, 0, 0);
+		canvasContext.drawImage(this.canvasCollection.bodyLines, 0, 0);
+		canvasContext.drawImage(this.canvasCollection.leftEarColour, 0, 0);
+		canvasContext.drawImage(this.canvasCollection.leftEarLines, 0, 0);
+		canvasContext.drawImage(this.canvasCollection.hairColour, 0, 0);
+		canvasContext.drawImage(this.canvasCollection.hairLines, 0, 0);
+		canvasContext.drawImage(this.canvasCollection.rightEarColor, 0, 0);
+		canvasContext.drawImage(this.canvasCollection.rightEarLines, 0, 0);
 
 		// Create an image string and display it
-		this.combinedSource = canvas.toDataURL("img/png");
-
-		// Alternatively, create and image object for later use
-		let imgObj = new Image();
-		imgObj.src = this.combinedSource;
+		console.log("Rendering to png");
+		this.renderedSrc = canvas.toDataURL("img/png");
 	}
 }

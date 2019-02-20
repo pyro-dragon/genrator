@@ -1,4 +1,4 @@
-import { Component, Input, AfterContentInit } from "@angular/core";
+import { Component, Input } from "@angular/core";
 import { Body } from "../Body";
 
 @Component({
@@ -6,7 +6,7 @@ import { Body } from "../Body";
 	templateUrl: "./body-form.component.html",
 	styleUrls: ["./body-form.component.css"]
 })
-export class BodyFormComponent implements AfterContentInit {
+export class BodyFormComponent {
 
 	bodyIndex = {
 		base: 0, 
@@ -50,21 +50,16 @@ export class BodyFormComponent implements AfterContentInit {
 	JSON;
 
 	@Input() body: Body;
+
+	bodyColour;
+	markingsColour;
+	hairColour;
+	noseColour;
+	eyeColour;
+	clawColour;
 	
 	constructor() {
 		this.JSON = JSON;
-	}
-
-	ngAfterContentInit() {
-	// 	// this.updateBody();
-
-	// 	// Some sensible defaults
-	// 	// this.body.colour.body = "#d1c19e";
-	// 	// this.body.colour.markings = "#2b1e04";
-	// 	// this.body.colour.nose = "#0e0901";
-	// 	// this.body.colour.hair = "#ec8f23";
-	// 	// this.body.colour.eyes = "#0d5e04";
-	// 	// this.body.colour.claws = "#190800";
 	}
 
 	updateBody() {

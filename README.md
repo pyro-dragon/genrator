@@ -2,6 +2,11 @@
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 7.1.0.
 
+## Production build
+
+Run `ng build --prod --base-href /path/` to build the application for a production environment. `/path/` represents the subdirectory of a server where the project is to be hosted. 
+To host on http://dragonscancode.com/gnoll run `ng build --prod --base-href /gnoll/`
+
 ## Development server
 
 Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.

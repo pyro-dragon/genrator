@@ -12,6 +12,12 @@
     height: 800px;
 }
 
+.viewport img {
+    background-color: transparent;
+    width: 365px;
+    height: 800px;
+}
+
 .combine {
     width: 91.5px;
     height: 200px;

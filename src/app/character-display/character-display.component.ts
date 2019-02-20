@@ -1,7 +1,6 @@
 import { Component, Input, ViewChild, ElementRef, KeyValueDiffers, DoCheck, AfterContentInit } from "@angular/core";
 import layout from "../../assets/layout.json";
 import { Body } from "../Body";
-import { combineLatest } from 'rxjs';
 import { BodyColour } from '../BodyColour.js';
 declare var Caman: any;
 
@@ -30,7 +29,7 @@ export class CharacterDisplayComponent implements DoCheck, AfterContentInit {
 	};
 
 	imageMap = {
-		root: "/assets/Bodies/",
+		root: "./assets/Bodies/",
 		base: {
 			male: "Male/", 
 			female: "Female/"
